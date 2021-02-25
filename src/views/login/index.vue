@@ -12,7 +12,7 @@
         </span>
         <el-input
           ref="username"
-          v-model="loginForm.username"
+          v-model="loginForm.Account"
           placeholder="Username"
           name="username"
           type="text"
@@ -28,7 +28,7 @@
         <el-input
           :key="passwordType"
           ref="password"
-          v-model="loginForm.password"
+          v-model="loginForm.Password"
           :type="passwordType"
           placeholder="Password"
           name="password"
@@ -40,23 +40,38 @@
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
-
+      <el-form-item>
+        <el-col :span="14">
+          <el-input
+            :key="code"
+            ref="code"
+            placeholder="验证码"
+            name="code"
+            tabindex="2"
+            auto-complete="on"
+            @click.native="checkRandomCode"
+          />
+        </el-col>
+        <el-col :span="8"><el-image :src="codeUrl" style="" /></el-col>
+      </el-form-item>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
       <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
         <span> password: any</span>
       </div>
-
     </el-form>
   </div>
 </template>
 
 <script>
 import { validUsername } from '@/utils/validate'
-
+import { createUuid } from '@/utils/index.js'
 export default {
   name: 'Login',
+  created(){
+
+ this.codeUrl=process.env.VUE_APP_BASE_API+ '/Login/GetRandomCode?sslToken=' + createUuid();
+  },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
@@ -74,12 +89,13 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        Account: 'admin',
+        Password: '111111'
       },
+      codeUrl: '',
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        Account: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        Password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
       passwordType: 'password',
@@ -93,6 +109,9 @@ export default {
       },
       immediate: true
     }
+  },
+  mounted(){
+ 
   },
   methods: {
     showPwd() {
@@ -233,5 +252,16 @@ $light_gray:#eee;
     cursor: pointer;
     user-select: none;
   }
+  .random-code{
+ display: inline-block;
+ width: 58%;
+
+  }
+  .random-image{
+display: inline-block;
+width:40%;
+
+  }
+
 }
 </style>
