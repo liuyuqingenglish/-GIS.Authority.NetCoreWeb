@@ -22,3 +22,23 @@ export function logout(token) {
     method: 'get'
   })
 }
+
+export function getRandomCode(ssToken)
+{
+return request({ 
+url:'/Login/GetRandomCode',
+method:'get',
+params:{ssToken}
+})
+
+}
+
+export function checkRandomCode(ssToken,code)
+{
+return request({
+url:'/Login/GetRandomCode',
+method:'get',
+params:{ssToken,code}
+})
+
+}

@@ -1,12 +1,15 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getInfo ,getRandomCode,checkRandomCode} from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
+import { createUuid } from '@/utils/index'
+import { resolve } from 'core-js/fn/promise'
 
 const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    tempToken:createUuid()
   }
 }
 
@@ -24,6 +27,9 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_TEMPTOKEN: (state, tempToken) => {
+    state.tempToken = tempToken
   }
 }
 
@@ -85,7 +91,30 @@ const actions = {
       commit('RESET_STATE')
       resolve()
     })
-  }
+  },
+  //获取验证码
+  getRandomCode({ commit ,state}) {
+  return new Promise((resovle,reject) => {
+     getRandomCode(state.tempToken).then( res => {
+     resolve();
+     }).catch( error => {
+       reject(error);
+     })
+  })
+
+  },
+
+  //对比验证码
+  checkRandomCode({ commit ,state},code) {
+    return new Promise((resovle,reject) => {
+      checkRandomCode(state.tempToken,code).then( res => {
+          resolve();
+        
+       })
+  
+    })
+  
+    }
 }
 
 export default {

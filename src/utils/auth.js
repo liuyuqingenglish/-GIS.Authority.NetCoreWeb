@@ -1,7 +1,6 @@
 import Cookies from 'js-cookie'
 
 const TokenKey = 'gis_authority_token'
-
 export function getToken() {
   return Cookies.get(TokenKey)
 }
